@@ -93,6 +93,13 @@ def get_temperature():
     latitude = gv.sd['loc'].split(",")[0]
     longitude = gv.sd['loc'].split(",")[1]
 
+    """Check whether the values in lat/lon are numbers"""
+    try:
+        float(latitude)
+        float(longitude)
+    except ValueError:
+        return("") 
+
     queryURL = weatherURL + "lat=" + str(latitude) + "&lon=" + str(longitude)
     response = urllib2.urlopen(queryURL)
 
