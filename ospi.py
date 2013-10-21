@@ -82,6 +82,25 @@ def CPU_temperature():
     except:
         pass
 
+def get_temperature():
+    """Returns the temperature given the stored location info"""
+    import urllib2
+
+    weatherBaseURL = "http://api.openweathermap.org/data/2.5/weather?"
+    weatherFormat = "units=metric&"
+    weatherURL = weatherBaseURL + weatherFormat
+
+    latitude = gv.sd['loc'].split(",")[0]
+    longitude = gv.sd['loc'].split(",")[1]
+
+    queryURL = weatherURL + "lat=" + str(latitude) + "&lon=" + str(longitude)
+    response = urllib2.urlopen(queryURL)
+
+    decoder = json.JSONDecoder()
+    temperature = decoder.decode(response.read())["main"]["temp"]
+
+    return (str(temperature))
+
 def log_run():
     """add run data to csv file - most recent first."""
     if gv.lg:
@@ -536,6 +555,7 @@ class home:
         else:
             try:
                 homepg += '<script>var cputemp='+str(float(CPU_temperature()))+'; var tempunit="C";</script>\n'            
+                homepg += '<script>var temp='+str(float(get_temperature()))+'; var tempunit="C";</script>\n'            
             except ValueError:
                 pass
         homepg += '<script src=\"'+baseurl()+'/static/scripts/java/svc1.8.3/home.js\"></script>'

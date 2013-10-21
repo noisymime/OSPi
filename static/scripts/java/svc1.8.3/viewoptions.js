@@ -29,6 +29,25 @@ function ftoggle() {
   }
   document.getElementById("tooltips").innerHTML = (state?"Hide Tooltips":"Show Tooltips");
 }
+
+function lookupLocation() {
+  var x=document.getElementsByName("oloc")[0];
+  x.value="Looking up location...";
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition);
+      
+    }
+  else{x.value="Geolocation is not supported by this browser.";}
+}
+  
+function showPosition(position)
+    {
+        var x=document.getElementsByName("oloc")[0];
+        x.value=position.coords.latitude + "," + position.coords.longitude; 
+  
+    }
+
 w("<div align=\"center\" style=\"background-color:#EEEEEE;border:2px solid gray;padding:5px 10px;width:240px;border-radius:10px;box-shadow:3px 3px 2px #888888;\">");
 w("<b>Set Options</b>:<br><font size=2>(Hover on each option to see tooltip)</font></div>");
 w("<p></p>");
@@ -46,7 +65,14 @@ for(oid=0;oid<opts.length;oid++){
   if(datatype == "boolean") {
   	w("<p title=\""+tooltip+"\"><b>"+label+":</b> <input type=checkbox "+(value>0?"checked":"")+" name=o"+name+">");
   } else if (datatype == "string") {
-    w("<p title=\""+tooltip+"\"><b>"+label+":</b> <input type=text size=31 maxlength=31 value='"+value+"' name=o"+name+">");
+    switch (name) {
+    case "loc":
+      w("<p title=\""+tooltip+"\"><b>"+label+":</b> <input type=text size=31 maxlength=31 value='"+value+"' name=o"+name+">");
+      w("<button id=\"location\" style=\"height:24\" onclick=\"lookupLocation();return false;\">Lookup Location</button>");
+      break;
+    default:
+      w("<p title=\""+tooltip+"\"><b>"+label+":</b> <input type=text size=31 maxlength=31 value='"+value+"' name=o"+name+">");
+    }
   } else {
     switch (name) {
     case "tz":
